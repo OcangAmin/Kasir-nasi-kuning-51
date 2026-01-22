@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Kasir Manual</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+    --primary: #1e90ff;
+    --bg: #f1f3f6;
+    --card: #ffffff;
+    --text: #333;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: var(--bg);
+    margin: 0;
+    padding: 15px;
+    color: var(--text);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Layout */
+.app {
+    max-width: 1000px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* Card */
+.card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Menu */
+.menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
+    gap: 10px;
+}
+
+.menu button {
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: 0.2s;
+}
+
+.menu button span {
+    display: block;
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.menu button:hover {
+    transform: scale(1.03);
+    background: #1873cc;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    text-align: left;
+    font-size: 13px;
+    color: #777;
+}
+
+/* Total Box */
+.total-box {
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.total-box strong {
+    font-size: 20px;
+    color: var(--primary);
+}
+
+/* Input */
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+/* Reset */
+.reset {
+    background: #e74c3c;
+    border: none;
+    color: #fff;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .app {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Kasir Manual</h1>
+
+<div class="app">
+
+    <!-- MENU -->
+    <div class="card">
+        <h3>Menu</h3>
+        <div class="menu">
+            <button onclick="addItem('Ikan',5000)">Ikan<span>Rp 5.000</span></button>
+            <button onclick="addItem('Bakwan',2000)">Bakwan<span>Rp 2.000</span></button>
+            <button onclick="addItem('Nasi',5000)">Nasi<span>Rp 5.000</span></button>
+            <button onclick="addItem('Ayam',5000)">Ayam<span>Rp 5.000</span></button>
+            <button onclick="addItem('Nasi Kuning Ayam',15000)">NK Ayam<span>Rp 15.000</span></button>
+            <button onclick="addItem('Nasi Kuning Ikan',13000)">NK Ikan<span>Rp 13.000</span></button>
+            <button onclick="addItem('Nasi Kuning Telur',10000)">NK Telur<span>Rp 10.000</span></button>
+            <button onclick="addItem('NK Ayam Telur',23000)">NK Ayam Telur<span>Rp 23.000</span></button>
+            <button onclick="addItem('NK Ikan Telur',20000)">NK Ikan Telur<span>Rp 20.000</span></button>
+            <button onclick="addItem('Air Mineral',5000)">Air Mineral<span>Rp 5.000</span></button>
+        </div>
+    </div>
+
+    <!-- KASIR -->
+    <div class="card">
+        <h3>Transaksi</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Menu</th>
+                    <th>Harga</th>
+                </tr>
+            </thead>
+            <tbody id="cart"></tbody>
+        </table>
+
+        <div class="total-box">
+            Total: <br>
+            <strong>Rp <span id="total">0</span></strong>
+        </div>
+
+        <label>Uang Bayar</label>
+        <input type="number" id="bayar" oninput="hitungKembalian()">
+
+        <div class="total-box">
+            Kembalian: <br>
+            <strong>Rp <span id="kembalian">0</span></strong>
+        </div>
+
+        <button class="reset" onclick="resetKasir()">Reset Transaksi</button>
+    </div>
+
+</div>
+
+<script>
+let total = 0;
+
+function addItem(nama, harga) {
+    const cart = document.getElementById("cart");
+    const row = cart.insertRow();
+    row.insertCell(0).innerText = nama;
+    row.insertCell(1).innerText = harga.toLocaleString("id-ID");
+
+    total += harga;
+    document.getElementById("total").innerText = total.toLocaleString("id-ID");
+    hitungKembalian();
+}
+
+function hitungKembalian() {
+    const bayar = document.getElementById("bayar").value || 0;
+    const kembali = bayar - total;
+    document.getElementById("kembalian").innerText =
+        kembali >= 0 ? kembali.toLocaleString("id-ID") : 0;
+}
+
+function resetKasir() {
+    document.getElementById("cart").innerHTML = "";
+    total = 0;
+    document.getElementById("total").innerText = "0";
+    document.getElementById("bayar").value = "";
+    document.getElementById("kembalian").innerText = "0";
+}
+</script>
+
+</body>
+</html>

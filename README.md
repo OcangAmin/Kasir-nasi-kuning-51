@@ -1,1 +1,0 @@
-# Kasir-nasi-kuning-51
